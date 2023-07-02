@@ -7,7 +7,7 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "yo",
+    "productName": "smearshot",
     "version": "0.0.0"
   },
   "tauri": {
@@ -32,8 +32,6 @@
       }
     },
     "bundle": {
-
-      
       "active": true,
       "targets": "all",
       "identifier": "smearshot",
@@ -53,9 +51,13 @@
         "fullscreen": false,
         "resizable": true,
         "title": "smearshot",
-        "width": 800,
-        "height": 600
+        "width": 400,
+        "height": 400
       }
-    ]
+    ]  ,
+      "systemTray": {
+      "iconPath": "icons/icon.png",
+      "iconAsTemplate": true
+    }
   }
 }

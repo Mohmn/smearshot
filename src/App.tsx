@@ -1,23 +1,32 @@
 import { useEffect, useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/tauri";
 import "./App.css";
 import { openFolder, startWatchingForFiles } from "./utils";
-import { open } from "@tauri-apps/api/dialog";
+import { invoke } from "@tauri-apps/api/tauri";
 
 
 const scs = new Set<string>();
 
 
 function App() {
-  const [userScrDir, setUserScrDir] = useState("");
-  const [name, setName] = useState("");
+
+  const [userScrDir, setUserScrDir] = useState<string>(localStorage.getItem('preferredDir') || '');
+  const [timoutToDelScreenShot, settimoutToDelScreenShot] = useState<number>();
+
+  // useEffect(() => {
+  //   console.log('local storage', localStorage.getItem('preferredDir'));
+  //   const prefferedDir = localStorage.getItem('preferredDir');
+  //   if (prefferedDir) {
+  //     invoke('hide_window').then(() => { console.log('closed') }).catch(e => { console.log('err', e) });
+  //   }
+  // }, [])
+
 
   useEffect(() => {
     console.log('scr dir', userScrDir);
     if (!userScrDir) return
     (async () => {
       await startWatchingForFiles(scs, userScrDir);
+
     }
     )()
   }, [userScrDir])
@@ -25,27 +34,28 @@ function App() {
 
   return (
     <div className="container">
-
-      <div className="row">
-
-        <button
-          onClick={async () => {
-            const selectedDir = await openFolder()
-            console.log('scrDir', selectedDir)
-            setUserScrDir(selectedDir as string);
-          }}
-        >
-          select screeshot folder to monitor
-        </button>
-        {/* <input
+      <button
+        onClick={async () => {
+          const selectedDir = await openFolder()
+          console.log('scrDir', selectedDir)
+          setUserScrDir(selectedDir as string);
+          localStorage.setItem('preferredDir', selectedDir as string)
+        }}
+      >
+        select screeshot folder to monitor
+      </button>
+      <input
         type={'number'}
-        onChange={() => {
+        onChange={(e) => {
+          console.log('ee', e.target.value);
 
         }}
         defaultValue={10}
         placeholder="set time for deleting the screen shot in seconds"
-      /> */}
-      </div>
+      />
+      <button>
+        Smear
+      </button>
     </div>
   );
 }
