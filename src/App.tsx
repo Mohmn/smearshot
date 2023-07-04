@@ -12,13 +12,13 @@ function App() {
   const [userScrDir, setUserScrDir] = useState<string>(localStorage.getItem('preferredDir') || '');
   const [timoutToDelScreenShot, settimoutToDelScreenShot] = useState<number>();
 
-  // useEffect(() => {
-  //   console.log('local storage', localStorage.getItem('preferredDir'));
-  //   const prefferedDir = localStorage.getItem('preferredDir');
-  //   if (prefferedDir) {
-  //     invoke('hide_window').then(() => { console.log('closed') }).catch(e => { console.log('err', e) });
-  //   }
-  // }, [])
+  useEffect(() => {
+    console.log('local storage', localStorage.getItem('preferredDir'));
+    const prefferedDir = localStorage.getItem('preferredDir');
+    if (prefferedDir) {
+      invoke('hide_window').then(() => { console.log('closed') }).catch(e => { console.log('err', e) });
+    }
+  }, [])
 
 
   useEffect(() => {
@@ -33,29 +33,41 @@ function App() {
 
 
   return (
-    <div className="container">
-      <button
-        onClick={async () => {
-          const selectedDir = await openFolder()
-          console.log('scrDir', selectedDir)
-          setUserScrDir(selectedDir as string);
-          localStorage.setItem('preferredDir', selectedDir as string)
-        }}
-      >
-        select screeshot folder to monitor
-      </button>
-      <input
-        type={'number'}
-        onChange={(e) => {
-          console.log('ee', e.target.value);
-
-        }}
-        defaultValue={10}
-        placeholder="set time for deleting the screen shot in seconds"
-      />
-      <button>
-        Smear
-      </button>
+    <div className="app-container">
+      <div className="subheader">Select folder and set lifespan for screenshots.</div>
+      <div className="content">
+        <div className="folder-selection">
+          <div className="folder-status">
+            Folder: {userScrDir || 'Not: set'}
+          </div>
+          <button
+            className="folder-btn"
+            onClick={async () => {
+              const selectedDir = await openFolder()
+              console.log('scrDir', selectedDir)
+              if(!selectedDir) return;
+              setUserScrDir(selectedDir as string);
+              localStorage.setItem('preferredDir', selectedDir as string)
+            }}>
+            Select Screenshot Folder
+          </button>
+        </div>
+        <div className="lifespan-selection">
+          <div className="lifespan-status">
+            Lifespan: {timoutToDelScreenShot || 'Not: set'}
+          </div>
+          <input
+            type="text"
+            className="lifespan-input"
+            placeholder="Enter number"
+            defaultValue={10}
+            onChange={(e) => {
+              console.log('ee', e.target.value);
+            }
+            } />
+        </div>
+        <button className="smear-btn">Smear</button>
+      </div>
     </div>
   );
 }
