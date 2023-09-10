@@ -2493,6 +2493,8 @@ checksum = "a507befe795404456341dfab10cef66ead4c041f62b8b11bbb92bffe5d0953e0"
 name = "smearshot"
 version = "0.0.0"
 dependencies = [
+ "notify",
+ "notify-debouncer-mini",
  "serde",
  "serde_json",
  "tauri",

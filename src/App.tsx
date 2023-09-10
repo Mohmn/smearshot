@@ -12,20 +12,24 @@ function App() {
   const [userScrDir, setUserScrDir] = useState<string>(localStorage.getItem('preferredDir') || '');
   const [timoutToDelScreenShot, settimoutToDelScreenShot] = useState<number>();
 
-  useEffect(() => {
-    console.log('local storage', localStorage.getItem('preferredDir'));
-    const prefferedDir = localStorage.getItem('preferredDir');
-    if (prefferedDir) {
-      invoke('hide_window').then(() => { console.log('closed') }).catch(e => { console.log('err', e) });
-    }
-  }, [])
+  // useEffect(() => {
+  //   console.log('local storage', localStorage.getItem('preferredDir'));
+  //   const prefferedDir = localStorage.getItem('preferredDir');
+  //   if (prefferedDir) {
+  //     invoke('hide_window').then(() => { console.log('closed') }).catch(e => { console.log('err', e) });
+  //   }
+  // }, [])
 
 
   useEffect(() => {
     console.log('scr dir', userScrDir);
     if (!userScrDir) return
     (async () => {
-      await startWatchingForFiles(scs, userScrDir);
+      startWatchingForFiles(scs,userScrDir);
+      invoke('watch', { path: userScrDir }).catch(e => {
+        console.error('Error watching path:', e);
+        // Handle error...
+      });
 
     }
     )()

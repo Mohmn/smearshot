@@ -1,13 +1,14 @@
-import { watchImmediate } from "tauri-plugin-fs-watch-api"
+import { watchImmediate,watch } from "tauri-plugin-fs-watch-api"
 import { confirm, open, ask } from '@tauri-apps/api/dialog';
 import { removeFile } from "@tauri-apps/api/fs";
 
 async function startWatchingForFiles(fileNameOrganiser: Set<string>, pathToWatch: string) {
-    return watchImmediate(pathToWatch,
+    return watch(pathToWatch,
         async (event: any) => {
 
-            const fileName = event.paths[0]
             console.log('event', event);
+            return;
+            const fileName = event.paths[0]
             // file create event gets triggerd multiple times thats why im storing it in a set like this
             // to remove this hack i guess i would have to write rust myself 
             // and implement fs-watch-api myself
@@ -44,7 +45,7 @@ async function startWatchingForFiles(fileNameOrganiser: Set<string>, pathToWatch
                 });
 
         },
-        // { recursive: true }
+        { delayMs: 1 }
     )
 }
 
