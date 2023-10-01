@@ -1,7 +1,65 @@
-.logo.vite:hover {
-  filter: drop-shadow(0 0 2em #747bff);
+app-container {
+  width: 80%;
+  /* max-width: 600px; */
+  /* margin: 0 auto; */
+  padding: 20px;
+  /* background-color: #1E1E1E; */
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  border: none;
+  outline:  none;
 }
 
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafb);
+
+.content {
+	max-width: 40%;
+}
+
+
+.header {
+  font-size: 2em;
+  margin-bottom: 10px;
+}
+
+.subheader {
+  font-size: 1.2em;
+  margin-bottom: 20px;
+}
+
+.folder-selection, .lifespan-selection {
+  margin-bottom: 20px;
+}
+
+.smear-btn {
+  background-color: #FF4081;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 0.5em;
+  padding: 1em 2em;
+  margin-top: 1.5em;
+  cursor: pointer;
+}
+
+.smear-btn {
+  width: 100%;
+}
+
+
+.lifespan-dropdown {
+  width: 30%;
+  padding: 5px;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+@media (max-width: 600px) {
+
+	.content {
+		max-width: 80%;
+	}
 }

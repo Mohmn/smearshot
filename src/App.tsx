@@ -1,72 +1,91 @@
-import { useEffect, useState } from "react";
-import "./App.css";
-import { openFolder, startWatchingForFiles } from "./utils";
+import {  useLayoutEffect, useState } from "react";
+import { fileWatcher, convertTimeToMiliSeconds } from "./utils";
 import { invoke } from "@tauri-apps/api/tauri";
+import { enable } from "tauri-plugin-autostart-api";
+import Lifespan from "./Components/Lifespan";
+import SelectFolder from "./Components/SelecFolder";
+import { LOCALSTORAGEKEYS } from "./constant";
+import { UnlistenFn } from "@tauri-apps/api/event";
+import "./App.css";
 
 
-const scs = new Set<string>();
+let startListeningForScreenShot: (pathToWatch: string, screenshotLife: number) => Promise<UnlistenFn>;
 
+(async () => {
+	startListeningForScreenShot = await fileWatcher();
+})();
 
 function App() {
 
-  const [userScrDir, setUserScrDir] = useState<string>(localStorage.getItem('preferredDir') || '');
-  const [timoutToDelScreenShot, settimoutToDelScreenShot] = useState<number>();
+  const [userScrDir, setUserScrDir] = useState<string>(() => localStorage.getItem(LOCALSTORAGEKEYS.SCRDIR) || '');
+	const [timerToDelScreenShot, setTimerToDelScreenShot] = useState<TIMER>(() => {
+		const defaultTimerObj: TIMER = {
+			time: 1,
+			unit: 'MINUTES'
+		};
+		const storedTimerObj = localStorage.getItem(LOCALSTORAGEKEYS.LIFESPANOFSCR);
+		const timerObj = storedTimerObj ? JSON.parse(storedTimerObj) as TIMER : defaultTimerObj;
+		console.log('timerObk',timerObj);
+		return timerObj;
+	});
 
-  useEffect(() => {
-    console.log('local storage', localStorage.getItem('preferredDir'));
-    const prefferedDir = localStorage.getItem('preferredDir');
+	// to start the app automaticall on startup
+  useLayoutEffect(() => {
+    (async () => {
+      await enable()
+    })()
+  }, [])
+
+  useLayoutEffect(() => {
+    console.log('local storage', localStorage.getItem(LOCALSTORAGEKEYS.SCRDIR));
+    const prefferedDir = localStorage.getItem(LOCALSTORAGEKEYS.SCRDIR);
     if (prefferedDir) {
       invoke('hide_window').then(() => { console.log('closed') }).catch(e => { console.log('err', e) });
     }
   }, [])
 
 
-  useEffect(() => {
-    console.log('scr dir', userScrDir);
-    if (!userScrDir) return
-    (async () => {
-      await startWatchingForFiles(scs, userScrDir);
-
-    }
-    )()
-  }, [userScrDir])
+  // listenForwindowCLoseandWindowOpen 
+  // on window(i.e when laptop shuts down) close if there any remaining items in set
+  // store them in disk
+  // on window open if there is anything in the disk load it into set
+  // and create timers for them
+  // tried it but window on_created (TauriEvent.WINDOW_CREATED) isnt firing
 
 
+	async function respondToUserChnages() {
+		
+	}
+
+  const userHasntSelectedAything = !(!!userScrDir);
+  console.log('user',userHasntSelectedAything,userScrDir);
   return (
     <div className="app-container">
-      <div className="subheader">Select folder and set lifespan for screenshots.</div>
+      {
+        userHasntSelectedAything &&
+        <h2 className="subheader">Select folder and set lifespan for screenshots.</h2>
+      }
       <div className="content">
-        <div className="folder-selection">
-          <div className="folder-status">
-            Folder: {userScrDir || 'Not: set'}
-          </div>
-          <button
-            className="folder-btn"
-            onClick={async () => {
-              const selectedDir = await openFolder()
-              console.log('scrDir', selectedDir)
-              if(!selectedDir) return;
-              setUserScrDir(selectedDir as string);
-              localStorage.setItem('preferredDir', selectedDir as string)
-            }}>
-            Select Screenshot Folder
-          </button>
-        </div>
-        <div className="lifespan-selection">
-          <div className="lifespan-status">
-            Lifespan: {timoutToDelScreenShot || 'Not: set'}
-          </div>
-          <input
-            type="text"
-            className="lifespan-input"
-            placeholder="Enter number"
-            defaultValue={10}
-            onChange={(e) => {
-              console.log('ee', e.target.value);
-            }
-            } />
-        </div>
-        <button className="smear-btn">Smear</button>
+        <SelectFolder
+          userScreenShotDirectory={userScrDir}
+          setUserScreenShotDirectoiry={setUserScrDir}
+        />
+        <Lifespan 
+          timerToDelScreenShot={timerToDelScreenShot}
+          setTimerToDelScreenShot={setTimerToDelScreenShot}
+        />
+				<button
+					className="smear-btn"
+					onClick={async () => {
+						if(!userScrDir || !timerToDelScreenShot) return;
+						await startListeningForScreenShot(
+							userScrDir, 
+							convertTimeToMiliSeconds(timerToDelScreenShot.time, timerToDelScreenShot.unit)
+						)
+					}}
+				>
+					Smear
+				</button>
       </div>
     </div>
   );

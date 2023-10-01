@@ -1,0 +1,19 @@
+.lifespan {
+    display: flex;
+		justify-content: space-between;
+}
+
+.error-msg {
+    display: inline-flex;
+    color: red;
+    font-size: 0.85rem;
+    margin-left: 0.85em;
+}
+
+input {
+    width: 60%;
+    padding: 5px;
+    margin-right: 10px;
+    border: none;
+    outline: none;
+}

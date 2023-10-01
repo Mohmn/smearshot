@@ -29,6 +29,9 @@
         "removeDir": true,
         "removeFile": true,
         "exists": true
+      },
+      "window": {
+        "all": true
       }
     },
     "bundle": {
@@ -52,7 +55,8 @@
         "resizable": true,
         "title": "smearshot",
         "width": 400,
-        "height": 400
+        "height": 400,
+        "alwaysOnTop": true
       }
     ]  ,
       "systemTray": {
