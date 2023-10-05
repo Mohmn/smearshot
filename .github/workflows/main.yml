@@ -1,4 +1,4 @@
-name: berfor-pr-merge
+name: before-pr-merge
 
 on:
   pull_request:
