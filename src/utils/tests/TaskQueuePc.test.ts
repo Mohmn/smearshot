@@ -59,12 +59,12 @@ describe('TaskQueuePC', () => {
 		let error: Error;
 		taskQueue.runTask(mockTask1).then().catch(e => {
 			error = e as Error;
+			expect(error).toBeInstanceOf(Error);
+			expect(error.message).toBe('Task 1 Error');
 		});
 		const result = await taskQueue.runTask(mockTask2);
 
 		expect(mockTask1).toHaveBeenCalled();
-		expect(error).toBeInstanceOf(Error);
-		expect(error.message).toBe('Task 1 Error');
 		expect(mockTask2).toHaveBeenCalled();
 		expect(result).toBe('Task 2 Success');
 	});
