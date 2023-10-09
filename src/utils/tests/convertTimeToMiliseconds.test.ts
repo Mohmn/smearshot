@@ -1,4 +1,4 @@
-import { convertTimeToMiliSeconds } from "..";
+import { convertTimeToMiliSeconds } from "../index";
 import { describe, it, expect } from 'vitest';
 
 describe('convertTimeToMiliSeconds', () => {

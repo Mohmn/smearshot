@@ -1,4 +1,4 @@
-import { arraysAreEqual } from "..";
+import { arraysAreEqual } from "../index";
 import { describe, it, expect } from 'vitest';
 
 describe('array utility function', () => {

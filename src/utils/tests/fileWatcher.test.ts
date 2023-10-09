@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { fileWatcher } from '..';
+import { fileWatcher } from '../index';
 
 beforeAll(() => {
   Object.defineProperty(window, '__TAURI_IPC__', {

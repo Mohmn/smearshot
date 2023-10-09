@@ -15,7 +15,10 @@ async function manageScreenShots(taskQ: TaskQueuePC, fileNameOrganiser: Set<stri
 		return
 	}
 
-	const userAddedFile = Object.hasOwn(event.type, 'create');
+
+	// type: {create: {kind: "file"}}}
+
+	const userAddedFile = event?.type?.create;
 	if (!userAddedFile) return;
 
 	if (userAddedFile) {
@@ -74,7 +77,6 @@ async function fileWatcher() {
 		previousArgs = [pathToWatch, screenshotLife];
 		watcher && watcher();
 		watcher = await watchImmediate(pathToWatch, (event) => manageScreenShots(taskQueue, scs, event, screenshotLife));
-		console.log('watcher added', previousArgs);
 		return watcher;
 	}
 }
@@ -105,6 +107,7 @@ async function openFolder() {
 }
 
 function convertTimeToMiliSeconds(time: number, unit: TIMERUNIT) {
+	if (time <= 0) return 0;
 	const timeInMiliseconds = time * 1000;
 	if (unit === 'MINUTES') return timeInMiliseconds * 60;
 	return timeInMiliseconds;
@@ -133,5 +136,7 @@ export {
 	fileWatcher,
 	openFolder,
 	debounce,
-	convertTimeToMiliSeconds
+	convertTimeToMiliSeconds,
+	arraysAreEqual,
+	manageScreenShots
 }

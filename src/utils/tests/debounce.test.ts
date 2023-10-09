@@ -1,4 +1,4 @@
-import { debounce } from "..";
+import { debounce } from "../index";
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 describe('debounce function', () => {

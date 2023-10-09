@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { TaskQueuePC } from '../TaskQueuePC';
-import { manageScreenShots } from '..';
+import { manageScreenShots } from '../index';
 
 describe('manageScreenShots', () => {
 
