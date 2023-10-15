@@ -9,7 +9,7 @@
 		width: 100%;
   }
 
-.folder-btn {
+.folder-btn:hover {
 	background-color: rgb(222, 53, 110);
 }
 h4 {
