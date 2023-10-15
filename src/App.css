@@ -1,29 +1,25 @@
-app-container {
-  width: 80%;
+.app-container {
+  width: 85%;
   /* max-width: 600px; */
   /* margin: 0 auto; */
-  padding: 20px;
+  padding: 0.5em;
   /* background-color: #1E1E1E; */
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   border: none;
   outline:  none;
+	margin: 0 auto;
 }
 
 
-.content {
-	max-width: 40%;
-}
+/* .content {
+	max-width: 81%;
+} */
 
 
 .header {
-  font-size: 2em;
-  margin-bottom: 10px;
-}
-
-.subheader {
-  font-size: 1.2em;
+  font-size: 1em;
   margin-bottom: 20px;
 }
 
@@ -57,9 +53,9 @@ app-container {
   margin-top: 20px;
 }
 
-@media (max-width: 600px) {
+/* @media (max-width: 600px) {
 
 	.content {
 		max-width: 80%;
 	}
-}
+} */

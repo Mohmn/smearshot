@@ -54,7 +54,9 @@ describe('TaskQueuePC', () => {
 		const taskQueue = new TaskQueuePC(1);
 
 		const mockTask1 = vi.fn(() => Promise.reject(new Error('Task 1 Error')));
-		const mockTask2 = vi.fn(() => Promise.resolve('Task 2 Success'));
+		const mockTask2 = vi.fn(() => Promise.reject(new Error('Task 2 Error')));
+		const mockTask3 = vi.fn(() => Promise.reject(new Error('Task 3 Error')));
+		const mockTask4 = vi.fn(() => Promise.resolve('Task 4 Success'));
 
 		let error: Error;
 		taskQueue.runTask(mockTask1).then().catch(e => {
@@ -62,11 +64,21 @@ describe('TaskQueuePC', () => {
 			expect(error).toBeInstanceOf(Error);
 			expect(error.message).toBe('Task 1 Error');
 		});
-		const result = await taskQueue.runTask(mockTask2);
+		taskQueue.runTask(mockTask2).then().catch(e => {
+			error = e as Error;
+			expect(error).toBeInstanceOf(Error);
+			expect(error.message).toBe('Task 2 Error');
+		});
+		taskQueue.runTask(mockTask3).then().catch(e => {
+			error = e as Error;
+			expect(error).toBeInstanceOf(Error);
+			expect(error.message).toBe('Task 3 Error');
+		});
+		const result = await taskQueue.runTask(mockTask4);
 
 		expect(mockTask1).toHaveBeenCalled();
 		expect(mockTask2).toHaveBeenCalled();
-		expect(result).toBe('Task 2 Success');
+		expect(result).toBe('Task 4 Success');
 	});
 
 

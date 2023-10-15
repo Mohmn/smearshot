@@ -6,8 +6,13 @@
     padding: 1em 2em;
     margin-top: 1.5em;
     cursor: pointer;
+		width: 100%;
   }
 
-h3 {
+.folder-btn {
+	background-color: rgb(222, 53, 110);
+}
+h4 {
   margin: 0;
+	line-break: 0;
 }

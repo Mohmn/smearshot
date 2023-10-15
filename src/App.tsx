@@ -1,4 +1,4 @@
-import {  useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { fileWatcher, convertTimeToMiliSeconds } from "./utils";
 import { invoke } from "@tauri-apps/api/tauri";
 import { enable } from "tauri-plugin-autostart-api";
@@ -17,7 +17,7 @@ let startListeningForScreenShot: (pathToWatch: string, screenshotLife: number) =
 
 function App() {
 
-  const [userScrDir, setUserScrDir] = useState<string>(() => localStorage.getItem(LOCALSTORAGEKEYS.SCRDIR) || '');
+	const [userScrDir, setUserScrDir] = useState<string>(() => localStorage.getItem(LOCALSTORAGEKEYS.SCRDIR) || '');
 	const [timerToDelScreenShot, setTimerToDelScreenShot] = useState<TIMER>(() => {
 		const defaultTimerObj: TIMER = {
 			time: 1,
@@ -25,70 +25,69 @@ function App() {
 		};
 		const storedTimerObj = localStorage.getItem(LOCALSTORAGEKEYS.LIFESPANOFSCR);
 		const timerObj = storedTimerObj ? JSON.parse(storedTimerObj) as TIMER : defaultTimerObj;
-		console.log('timerObk',timerObj);
+		console.log('timerObk', timerObj);
 		return timerObj;
 	});
 
 	// to start the app automaticall on startup
-  useLayoutEffect(() => {
-    (async () => {
-      await enable()
-    })()
-  }, [])
+	useLayoutEffect(() => {
+		(async () => {
+			await enable()
+		})()
+	}, [])
 
-  useLayoutEffect(() => {
-    console.log('local storage', localStorage.getItem(LOCALSTORAGEKEYS.SCRDIR));
-    const prefferedDir = localStorage.getItem(LOCALSTORAGEKEYS.SCRDIR);
-    if (prefferedDir) {
-      invoke('hide_window').then(() => { console.log('closed') }).catch(e => { console.log('err', e) });
-    }
-  }, [])
-
-
-  // listenForwindowCLoseandWindowOpen 
-  // on window(i.e when laptop shuts down) close if there any remaining items in set
-  // store them in disk
-  // on window open if there is anything in the disk load it into set
-  // and create timers for them
-  // tried it but window on_created (TauriEvent.WINDOW_CREATED) isnt firing
+	useLayoutEffect(() => {
+		console.log('local storage', localStorage.getItem(LOCALSTORAGEKEYS.SCRDIR));
+		const prefferedDir = localStorage.getItem(LOCALSTORAGEKEYS.SCRDIR);
+		if (prefferedDir) {
+		  invoke('hide_window').then(() => { console.log('closed') }).catch(e => { console.log('err', e) });
+		}
+	}, [])
 
 
-	async function respondToUserChnages() {
-		
-	}
+	// listenForwindowCLoseandWindowOpen 
+	// on window(i.e when laptop shuts down) close if there any remaining items in set
+	// store them in disk
+	// on window open if there is anything in the disk load it into set
+	// and create timers for them
+	// tried it but window on_created (TauriEvent.WINDOW_CREATED) isnt firing
 
-  const userHasntSelectedAything = !(!!userScrDir);
-  console.log('user',userHasntSelectedAything,userScrDir);
-  return (
-    <div className="app-container">
-      {
-        userHasntSelectedAything &&
-        <h2 className="subheader">Select folder and set lifespan for screenshots.</h2>
-      }
-      <div className="content">
-        <SelectFolder
-          userScreenShotDirectory={userScrDir}
-          setUserScreenShotDirectoiry={setUserScrDir}
-        />
-        <Lifespan 
-          timerToDelScreenShot={timerToDelScreenShot}
-          setTimerToDelScreenShot={setTimerToDelScreenShot}
-        />
-				<button
-					className="smear-btn"
-					onClick={async () => {
-						if(!userScrDir || !timerToDelScreenShot) return;
-						await startListeningForScreenShot(
-							userScrDir, 
-							convertTimeToMiliSeconds(timerToDelScreenShot.time, timerToDelScreenShot.unit)
-						)
-					}}
-				>
-					Smear
-				</button>
-      </div>
-    </div>
-  );
+
+	// async function respondToUserChnages() {
+
+	// }
+
+	const userHasntSelectedAything = !(!!userScrDir);
+	return (
+		<div className="app-container">
+			{
+				userHasntSelectedAything &&
+				<h4 className="header">
+					Select screenshot folder and set lifespan for screenshots.
+				</h4>
+			}
+			<SelectFolder
+				userScreenShotDirectory={userScrDir}
+				setUserScreenShotDirectoiry={setUserScrDir}
+			/>
+			<Lifespan
+				timerToDelScreenShot={timerToDelScreenShot}
+				setTimerToDelScreenShot={setTimerToDelScreenShot}
+			/>
+			<button
+				className="smear-btn"
+				onClick={async () => {
+					if (!userScrDir || !timerToDelScreenShot) return;
+					await startListeningForScreenShot(
+						userScrDir,
+						convertTimeToMiliSeconds(timerToDelScreenShot.time, timerToDelScreenShot.unit)
+					)
+				}}
+			>
+				Smear
+			</button>
+		</div>
+	);
 }
 
 export default App;

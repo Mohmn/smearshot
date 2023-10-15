@@ -8,8 +8,10 @@ use tauri_plugin_autostart::MacosLauncher;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
-fn show_window(window: tauri::Window) {
-  window.show().unwrap();
+fn show_window(app: tauri::AppHandle, label: String) {
+	println!("show {}", label);
+		let app = app.get_window("dialog").unwrap();
+			app.show().unwrap();
 }
 
 #[tauri::command]
@@ -28,7 +30,6 @@ fn main() {
         .on_system_tray_event(|app, event| match event {
             SystemTrayEvent::MenuItemClick { id, .. } => match id.as_str() {
                 "open_app_window" => {
-                    println!("yo running!");
                     let app = app.get_window("main").unwrap();
                     app.show().unwrap();                        
                 }
@@ -39,7 +40,9 @@ fn main() {
         .plugin(tauri_plugin_fs_watch::init())
         .invoke_handler(tauri::generate_handler![show_window,hide_window])
         .on_window_event(|event| match event.event() {
-          tauri::WindowEvent::CloseRequested { api, .. } => {
+					tauri::WindowEvent::CloseRequested { api, .. } => {
+						// let lb = event.window().label();
+						println!("CloseRequessted");
             event.window().hide().unwrap();
             api.prevent_close();
           }
