@@ -28,17 +28,17 @@ export class TaskQueuePC {
 		}
 	}
 
-	private getNextTask(): Promise<any> {
+	private getNextTask(): Promise<TaskFunction> {
 		return new Promise((resolve) => {
 			if (this.taskQueue.length !== 0) {
-				return resolve(this.taskQueue.shift());
+				return resolve(this.taskQueue.shift() as TaskFunction);
 			}
 
 			this.consumerQueue.push(resolve);
 		})
 	}
 
-	runTask(task: TaskFunction) {
+	runTask(task: TaskFunction): Promise<any> {
 		return new Promise((resolve, reject) => {
 			const taskWrapper = () => {
 				const taskPromise = task();

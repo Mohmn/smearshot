@@ -10,13 +10,14 @@ export default function SelectFolder(props: Props) {
 	const { userScreenShotDirectory, setUserScreenShotDirectoiry } = props;
 	return (
 		<div className="folder-selection">
-			<h3 >
+			<h4 >
 				Selected Folder: {userScreenShotDirectory || 'Not: set'}
-			</h3>
+			</h4>
 			<button
 				className="folder-btn"
 				onClick={async () => {
-					const selectedDir = await openFolder()
+					const selectedDir = await openFolder();
+					if (!selectedDir) return;
 					if (selectedDir === userScreenShotDirectory) return;
 					localStorage.setItem(LOCALSTORAGEKEYS.SCRDIR, selectedDir as string);
 					setUserScreenShotDirectoiry(selectedDir as string);

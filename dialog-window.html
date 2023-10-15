@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<link rel="icon" type="image/svg+xml" href="/vite.svg" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<style>
+		body {
+			color: #FFFFFF;
+		}
+
+		h5 {
+			margin: 0 auto;
+			padding: 0;
+			margin-bottom: 1em;
+		}
+
+		#dialog {
+			display: flex;
+			flex-direction: column;
+		}
+
+		.buttons {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			gap: 1em;
+		}
+
+		#yes,
+		#no {
+			background-color: #FF4081;
+			border-radius: 10px;
+			width: 40%;
+			height: 35px;
+			border: none;
+			color: white
+		}
+
+		#yes:hover, #no:hover {
+			background-color: rgb(222, 53, 110);
+		}
+	</style>
+</head>
+
+<body>
+	<div id="root"></div>
+	<div id="dialog">
+		<h5>Are you sure to delete the screen shot</h3>
+			<div class="buttons">
+				<button id='yes'>yes</button>
+				<button id='no'>no</button>
+			</div>
+	</div>
+	<script type="module">
+		import { WebviewWindow, getCurrent } from '@tauri-apps/api/window';
+		import { EVENT } from '/src/constant.ts';
+		import { invoke } from "@tauri-apps/api/tauri";
+
+		const window = WebviewWindow.getByLabel('main')
+		const dialogWindow = getCurrent()
+		document.getElementById('yes').addEventListener('click', async function () {
+			try {
+				await window.emit(EVENT.PERMISSION, { 'permission': true })
+				await dialogWindow.hide()
+			} catch (e) {
+				console.log('error while emitting', e);
+			}
+		})
+
+		document.getElementById('no').addEventListener('click', async function () {
+			try {
+				await window.emit(EVENT.PERMISSION, { 'permission': false })
+				await dialogWindow.hide()
+			} catch (e) {
+				console.log('error while emitting', e);
+			}
+		})
+
+		dialogWindow.onCloseRequested(async (event) => {
+			console.log('dialpg close waited')
+			await window.emit(EVENT.PERMISSION, { 'permission': false });
+			await dialogWindow.hide();
+			event.stopPropogation();
+		})
+
+
+		window
+	</script>
+</body>
+
+</html>

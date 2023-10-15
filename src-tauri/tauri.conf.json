@@ -13,15 +13,8 @@
   "tauri": {
     "allowlist": {
       "all": false,
-      "shell": {
-        "all": false,
-        "open": true
-      },
       "dialog": {
-        "all": true, 
-        "confirm": true, 
-        "open": true,
-        "ask": true
+        "open": true
       },
       "fs": {
         "all": false, 
@@ -52,16 +45,31 @@
     "windows": [
       {
         "fullscreen": false,
-        "resizable": true,
-        "title": "smearshot",
+        "resizable": false,
+        "title": "SMEARSHOT",
+        "width": 450,
+        "height": 380,
+        "alwaysOnTop": false,
+				"center": true
+			},
+			{
+        "fullscreen": false,
+        "title": "SMEARSHOT",
         "width": 400,
-        "height": 400,
-        "alwaysOnTop": true
-      }
-    ]  ,
+        "height": 100,
+        "alwaysOnTop": true,
+				"center": true,
+				"label": "dialog",
+				"url": "../../dialog-window.html",
+				"visible":false,
+				"resizable": true,
+				"transparent": true
+			}	
+			]  ,
       "systemTray": {
-      "iconPath": "icons/icon.png",
-      "iconAsTemplate": true
-    }
-  }
-}
+				"iconPath": "icons/icon.png",
+				"iconAsTemplate": true
+			}
+		}
+	}
+	

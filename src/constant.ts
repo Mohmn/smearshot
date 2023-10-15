@@ -3,7 +3,10 @@ enum LOCALSTORAGEKEYS  {
     LIFESPANOFSCR = 'life_span_for_screenshots'
 }
 
-
+enum EVENT {
+	PERMISSION = 'permission'
+}
 export {
-    LOCALSTORAGEKEYS
+    LOCALSTORAGEKEYS,
+		EVENT
 }

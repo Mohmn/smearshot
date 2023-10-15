@@ -3,20 +3,21 @@ import { confirm, open } from '@tauri-apps/api/dialog';
 import { removeFile } from "@tauri-apps/api/fs";
 import { TaskQueuePC } from "./TaskQueuePC";
 import { UnlistenFn } from "@tauri-apps/api/event";
+import { getCurrent, WebviewWindow } from '@tauri-apps/api/window'
+import { EVENT } from "../constant";
+
+// const s = new WebviewWindow('d');
+// s.onScaleChanged
 
 async function manageScreenShots(taskQ: TaskQueuePC, fileNameOrganiser: Set<string>, event: any, timeOut: number) {
-
-	const fileName = event.paths[0]
+	const fileName = event.paths[0];
 	// file create event gets triggerd multiple times thats why im storing it in a set like this
 	// to remove this hack i guess i would have to write rust myself 
 	// and implement fs-watch-api myself
 	if (fileNameOrganiser.has(fileName)) {
-		console.log('user already has file', fileName)
+		console.log('user already has file.', fileName)
 		return
 	}
-
-
-	// type: {create: {kind: "file"}}}
 
 	const userAddedFile = event?.type?.create;
 	if (!userAddedFile) return;
@@ -26,42 +27,64 @@ async function manageScreenShots(taskQ: TaskQueuePC, fileNameOrganiser: Set<stri
 		console.log(' saving it to set', event);
 	}
 
-
-	// await bringToFrontAndShowDialog();
-	// const window = getCurrent();
-	// await window.center();
-	// await window.setFocus();
-	// try{
-	//     console.log('center')
-	// await webview.setFocus()
-	// }catch(e) {
-	//     console.log('error while centering',e)
-	// }
-	// 
-
-	// await webview.
-
 	// pop  up only window at a time
-	// if multiple screen shots are taken  
-	taskQ.runTask(() => confirm("Are you sure to delete the screen shot", {
-		title: 'smearshot'
-	})
-		.then(perm => {
-			// return
-			if (!perm) {
-				console.log('user does not want to delt file so deleting it from set', fileName);
-				fileNameOrganiser.delete(fileName)
-				return
-			}
-			setTimeout(async () => {
+	// if multiple screen shots are taken 
+	// taskQs responsibilty is to rate-limit promises
+	taskQ.runTask(() => new Promise(async (res, rej) => {
+		try {
+			const dialogWindow = WebviewWindow.getByLabel('dialog') as WebviewWindow;
+			await dialogWindow.show();
+			const unlistenFn = await dialogWindow.listen(EVENT.PERMISSION, function (event) {
+				console.log('perm event', event)
+				unlistenFn();
+				res(event.payload);
+			})
+		} catch (error) {
+			rej(error);
+		}
+	})).then(({ permission }: Permission) => {
+		if (!permission) {
+			console.log('user does not want to delt file so deleting it from set', fileName);
+			fileNameOrganiser.delete(fileName)
+			return
+		}
+		setTimeout(async () => {
+			try {
 				console.log('user gave perm to delt file so deleting it from dir and set', fileName);
 				fileNameOrganiser.delete(fileName)
 				await removeFile(fileName);
-			}, timeOut)
-		}).catch(err => {
-			console.log('eror while opening dialog', err)
-		})
-	)
+			} catch (err) {
+				throw err
+			}
+		}, timeOut)
+	}).catch(e => {
+		console.log('e', e)
+	})
+
+
+	// await dialogWindow.
+
+	// pop  up only window at a time
+	// if multiple screen shots are taken  
+	// taskQ.runTask(() => confirm("Are you sure to delete the screen shot", {
+	// 	title: 'smearshot'
+	// })
+	// 	.then(perm => {
+	// 		// return
+	// 		if (!perm) {
+	// 			console.log('user does not want to delt file so deleting it from set', fileName);
+	// 			fileNameOrganiser.delete(fileName)
+	// 			return
+	// 		}
+	// 		setTimeout(async () => {
+	// 			console.log('user gave perm to delt file so deleting it from dir and set', fileName);
+	// 			fileNameOrganiser.delete(fileName)
+	// 			await removeFile(fileName);
+	// 		}, timeOut)
+	// 	}).catch(err => {
+	// 		console.log('eror while opening dialog', err)
+	// 	})
+	// )
 
 
 }
@@ -72,7 +95,6 @@ async function fileWatcher() {
 	let watcher: UnlistenFn;
 	let previousArgs: [string, number];
 	return async function (pathToWatch: string, screenshotLife: number) {
-		
 		if (arraysAreEqual(previousArgs, [pathToWatch, screenshotLife])) return watcher;
 		previousArgs = [pathToWatch, screenshotLife];
 		watcher && watcher();
@@ -125,7 +147,7 @@ function debounce<T extends (...args: any[]) => any>(func: T, timeout: number = 
 }
 
 function arraysAreEqual(arr1: any[], arr2: any[]) {
-	if(!arr1 || !arr2) return false;
+	if (!arr1 || !arr2) return false;
 	if (arr1.length !== arr2.length) return false;
 	for (let i = 0; i < arr1.length; i++)
 		if (arr1[i] !== arr2[i]) return false;
