@@ -60,7 +60,7 @@
         "alwaysOnTop": true,
 				"center": true,
 				"label": "dialog",
-				"url": "../../dialog-window.html",
+				"url": "../../nested/dialog-window.html",
 				"visible":false,
 				"resizable": true,
 				"transparent": true

@@ -6,8 +6,7 @@ import { UnlistenFn } from "@tauri-apps/api/event";
 import { getCurrent, WebviewWindow } from '@tauri-apps/api/window'
 import { EVENT } from "../constant";
 
-// const s = new WebviewWindow('d');
-// s.onScaleChanged
+// 
 
 async function manageScreenShots(taskQ: TaskQueuePC, fileNameOrganiser: Set<string>, event: any, timeOut: number) {
 	const fileName = event.paths[0];
@@ -60,31 +59,6 @@ async function manageScreenShots(taskQ: TaskQueuePC, fileNameOrganiser: Set<stri
 	}).catch(e => {
 		console.log('e', e)
 	})
-
-
-	// await dialogWindow.
-
-	// pop  up only window at a time
-	// if multiple screen shots are taken  
-	// taskQ.runTask(() => confirm("Are you sure to delete the screen shot", {
-	// 	title: 'smearshot'
-	// })
-	// 	.then(perm => {
-	// 		// return
-	// 		if (!perm) {
-	// 			console.log('user does not want to delt file so deleting it from set', fileName);
-	// 			fileNameOrganiser.delete(fileName)
-	// 			return
-	// 		}
-	// 		setTimeout(async () => {
-	// 			console.log('user gave perm to delt file so deleting it from dir and set', fileName);
-	// 			fileNameOrganiser.delete(fileName)
-	// 			await removeFile(fileName);
-	// 		}, timeOut)
-	// 	}).catch(err => {
-	// 		console.log('eror while opening dialog', err)
-	// 	})
-	// )
 
 
 }

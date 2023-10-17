@@ -79,14 +79,11 @@
 		})
 
 		dialogWindow.onCloseRequested(async (event) => {
-			console.log('dialpg close waited')
 			await window.emit(EVENT.PERMISSION, { 'permission': false });
 			await dialogWindow.hide();
 			event.stopPropogation();
 		})
 
-
-		window
 	</script>
 </body>
 
