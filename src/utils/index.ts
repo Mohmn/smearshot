@@ -5,7 +5,7 @@ import { TaskQueuePC } from "./TaskQueuePC";
 import { UnlistenFn } from "@tauri-apps/api/event";
 import { getCurrent, WebviewWindow } from '@tauri-apps/api/window'
 import { EVENT } from "../constant";
-
+import { appWindow, LogicalSize } from '@tauri-apps/api/window'; // for resizing 
 // 
 
 async function manageScreenShots(taskQ: TaskQueuePC, fileNameOrganiser: Set<string>, event: any, timeOut: number) {
@@ -32,7 +32,17 @@ async function manageScreenShots(taskQ: TaskQueuePC, fileNameOrganiser: Set<stri
 	taskQ.runTask(() => new Promise(async (res, rej) => {
 		try {
 			const dialogWindow = WebviewWindow.getByLabel('dialog') as WebviewWindow;
-			await dialogWindow.show();
+
+				// Changing the width and height of the dialog window using setSize.
+				// Note: It will not create a scrollbar.
+
+				// After setting the size, a callback function is call. 
+				// Inside the callback, the decoration is set to true in runtime.
+			  	 dialogWindow.setSize(new LogicalSize(400,200)).then(()=>{
+					 // Callback function:- setting decorations to true after changing the size.
+						dialogWindow.setDecorations(true)
+					})
+					await dialogWindow.show();
 			const unlistenFn = await dialogWindow.listen(EVENT.PERMISSION, function (event) {
 				console.log('perm event', event)
 				unlistenFn();

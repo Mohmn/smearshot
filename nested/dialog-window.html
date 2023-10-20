@@ -8,6 +8,7 @@
 	<style>
 		body {
 			color: #FFFFFF;
+			/* background-color: rgba(255, 255, 255, 0.1); */
 		}
 
 		h5 {
@@ -60,10 +61,12 @@
 
 		const window = WebviewWindow.getByLabel('main')
 		const dialogWindow = getCurrent()
+		const dialogWindow2 = WebviewWindow.getByLabel('dialog'); // reference to the WebviewWindow with the label 'dialog' to set decoration to false again.
 		document.getElementById('yes').addEventListener('click', async function () {
 			try {
 				await window.emit(EVENT.PERMISSION, { 'permission': true })
 				await dialogWindow.hide()
+				await dialogWindow2.setDecorations(false)	// setting Decoration to false if user iterect with yes.
 			} catch (e) {
 				console.log('error while emitting', e);
 			}
@@ -73,6 +76,7 @@
 			try {
 				await window.emit(EVENT.PERMISSION, { 'permission': false })
 				await dialogWindow.hide()
+				await dialogWindow2.setDecorations(false) // setting Decoration to false if user iterect with no.
 			} catch (e) {
 				console.log('error while emitting', e);
 			}
@@ -81,6 +85,7 @@
 		dialogWindow.onCloseRequested(async (event) => {
 			await window.emit(EVENT.PERMISSION, { 'permission': false });
 			await dialogWindow.hide();
+			await dialogWindow2.setDecorations(false) // setting Decoration to false if user iterect with no if user close the dialog.
 			event.stopPropogation();
 		})
 
