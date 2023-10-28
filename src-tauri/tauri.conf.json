@@ -56,7 +56,7 @@
         "fullscreen": false,
         "title": "SMEARSHOT",
         "width": 400,
-        "height": 130,
+        "height": 100,
         "alwaysOnTop": true,
 				"center": true,
 				"label": "dialog",
@@ -64,7 +64,7 @@
 				"visible":false,
 				"resizable": true,
         "transparent": true,
-        "decorations": false
+        "decorations": true
 			}	
 			]  ,
       "systemTray": {

@@ -5,6 +5,7 @@ import { TaskQueuePC } from "./TaskQueuePC";
 import { UnlistenFn } from "@tauri-apps/api/event";
 import { getCurrent, WebviewWindow } from '@tauri-apps/api/window'
 import { EVENT } from "../constant";
+import { appWindow, LogicalSize } from '@tauri-apps/api/window';
 
 async function manageScreenShots(taskQ: TaskQueuePC, fileNameOrganiser: Set<string>, event: any, timeOut: number) {
 	const fileName = event.paths[0];
@@ -30,9 +31,13 @@ async function manageScreenShots(taskQ: TaskQueuePC, fileNameOrganiser: Set<stri
 	taskQ.runTask(() => new Promise(async (res, rej) => {
 		try {
 			const dialogWindow = WebviewWindow.getByLabel('dialog') as WebviewWindow;
-					await dialogWindow.show();
-				// We are using it for fix a bug i.e make window transpaerent in windows(os)
-					await dialogWindow.setDecorations(true);
+			await  dialogWindow.setSize(new LogicalSize(400,130))
+			await dialogWindow.setDecorations(false);
+			// We are using it for fix a bug i.e make window transpaerent in windows(os)
+				queueMicrotask(()=>{
+					dialogWindow.setDecorations(true);
+				});
+			await dialogWindow.show();
 			const unlistenFn = await dialogWindow.listen(EVENT.PERMISSION, function (event) {
 				console.log('perm event', event)
 				unlistenFn();
