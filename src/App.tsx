@@ -4,6 +4,7 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { enable } from "tauri-plugin-autostart-api";
 import Lifespan from "./Components/Lifespan";
 import SelectFolder from "./Components/SelecFolder";
+import TimeoutMsg from "./Components/TimeoutMsg";
 import { LOCALSTORAGEKEYS } from "./constant";
 import { UnlistenFn } from "@tauri-apps/api/event";
 import "./App.css";
@@ -25,9 +26,9 @@ function App() {
 		};
 		const storedTimerObj = localStorage.getItem(LOCALSTORAGEKEYS.LIFESPANOFSCR);
 		const timerObj = storedTimerObj ? JSON.parse(storedTimerObj) as TIMER : defaultTimerObj;
-		console.log('timerObk', timerObj);
 		return timerObj;
 	});
+	const [showMsg, setShowMsg] = useState<boolean>(false);
 
 	// to start the app automaticall on startup
 	useLayoutEffect(() => {
@@ -40,7 +41,7 @@ function App() {
 		console.log('local storage', localStorage.getItem(LOCALSTORAGEKEYS.SCRDIR));
 		const prefferedDir = localStorage.getItem(LOCALSTORAGEKEYS.SCRDIR);
 		if (prefferedDir) {
-		  invoke('hide_window').then(() => { console.log('closed') }).catch(e => { console.log('err', e) });
+			invoke('hide_window').then(() => { console.log('closed') }).catch(e => { console.log('err', e) });
 		}
 	}, [])
 
@@ -82,10 +83,23 @@ function App() {
 						userScrDir,
 						convertTimeToMiliSeconds(timerToDelScreenShot.time, timerToDelScreenShot.unit)
 					)
+					setShowMsg(true);
 				}}
 			>
 				Smear
 			</button>
+			{showMsg &&
+				<TimeoutMsg
+					timer={5000}
+					onTimeOut={() => setShowMsg(false)}
+				>
+					<p className="success-msg">
+						Smearing initiated! Your screenshots are now set to be deleted after the specified lifespan.
+						Check the deletion confirmation dialog after capturing each screenshot.
+						Happy Smearing
+					</p>
+				</TimeoutMsg>
+			}
 		</div>
 	);
 }
