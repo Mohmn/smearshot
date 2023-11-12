@@ -4,6 +4,7 @@ import { invoke } from "@tauri-apps/api/tauri";
 import { enable } from "tauri-plugin-autostart-api";
 import Lifespan from "./Components/Lifespan";
 import SelectFolder from "./Components/SelecFolder";
+import Timeout from "./Components/Timeout";
 import { LOCALSTORAGEKEYS } from "./constant";
 import { UnlistenFn } from "@tauri-apps/api/event";
 import "./App.css";
@@ -28,6 +29,7 @@ function App() {
 		console.log('timerObk', timerObj);
 		return timerObj;
 	});
+	const [showMsg, setShowMsg] = useState<boolean>(false);
 
 	// to start the app automaticall on startup
 	useLayoutEffect(() => {
@@ -81,11 +83,24 @@ function App() {
 					await startListeningForScreenShot(
 						userScrDir,
 						convertTimeToMiliSeconds(timerToDelScreenShot.time, timerToDelScreenShot.unit)
-					)
+					);
+					setShowMsg(true);
 				}}
 			>
 				Smear
 			</button>
+			{showMsg &&
+				<Timeout
+					timer={5000}
+					onTimeOut={() => setShowMsg(false)}
+				>
+					<p className="success-msg">
+						Smearing initiated! Your screenshots are now set to be deleted after the specified lifespan.
+						Check the deletion confirmation dialog after capturing each screenshot.
+						Happy Smearing
+					</p>
+				</Timeout>
+			}
 		</div>
 	);
 }
