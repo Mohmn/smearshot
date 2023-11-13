@@ -26,7 +26,6 @@ function App() {
 		};
 		const storedTimerObj = localStorage.getItem(LOCALSTORAGEKEYS.LIFESPANOFSCR);
 		const timerObj = storedTimerObj ? JSON.parse(storedTimerObj) as TIMER : defaultTimerObj;
-		console.log('timerObk', timerObj);
 		return timerObj;
 	});
 	const [showMsg, setShowMsg] = useState<boolean>(false);
@@ -34,7 +33,11 @@ function App() {
 	// to start the app automaticall on startup
 	useLayoutEffect(() => {
 		(async () => {
-			await enable()
+			await enable();
+			await startListeningForScreenShot(
+				userScrDir,
+				convertTimeToMiliSeconds(timerToDelScreenShot.time, timerToDelScreenShot.unit)
+			);
 		})()
 	}, [])
 
