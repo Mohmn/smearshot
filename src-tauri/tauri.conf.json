@@ -56,14 +56,15 @@
         "fullscreen": false,
         "title": "SMEARSHOT",
         "width": 400,
-        "height": 100,
+        "height": 160,
         "alwaysOnTop": true,
 				"center": true,
 				"label": "dialog",
 				"url": "../../nested/dialog-window.html",
 				"visible":false,
-				"resizable": true,
-				"transparent": true
+				"resizable": false,
+				"transparent": true,
+				"decorations": false
 			}	
 			]  ,
       "systemTray": {
