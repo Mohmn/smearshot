@@ -63,7 +63,8 @@
 				"url": "../../nested/dialog-window.html",
 				"visible":false,
 				"resizable": true,
-				"transparent": true
+        "transparent": true,
+        "decorations": true
 			}	
 			]  ,
       "systemTray": {

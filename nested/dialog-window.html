@@ -58,12 +58,13 @@
 		import { EVENT } from '/src/constant.ts';
 		import { invoke } from "@tauri-apps/api/tauri";
 
-		const window = WebviewWindow.getByLabel('main')
-		const dialogWindow = getCurrent()
+		const window = WebviewWindow.getByLabel('main');
+		const dialogWindow = getCurrent();
 		document.getElementById('yes').addEventListener('click', async function () {
 			try {
 				await window.emit(EVENT.PERMISSION, { 'permission': true })
 				await dialogWindow.hide()
+				await dialogWindow.setDecorations(false);
 			} catch (e) {
 				console.log('error while emitting', e);
 			}
@@ -73,6 +74,7 @@
 			try {
 				await window.emit(EVENT.PERMISSION, { 'permission': false })
 				await dialogWindow.hide()
+				await dialogWindow.setDecorations(false);
 			} catch (e) {
 				console.log('error while emitting', e);
 			}
@@ -81,6 +83,7 @@
 		dialogWindow.onCloseRequested(async (event) => {
 			await window.emit(EVENT.PERMISSION, { 'permission': false });
 			await dialogWindow.hide();
+			await dialogWindow.setDecorations(false);
 			event.stopPropogation();
 		})
 
